@@ -10,11 +10,13 @@ public class BirdScript : MonoBehaviour
 
     public float flapStrength;
 
+    public GameManager manager;
+
     // Start is called before the first frame update
     void Start()
     {
+        manager = GameObject.FindGameObjectWithTag("Logic").GetComponent<GameManager>();
         gameObject.name = "Mr. Birdie";
-        Debug.Log(gameObject.name);
     }
 
     // Update is called once per frame
@@ -26,5 +28,9 @@ public class BirdScript : MonoBehaviour
             myRigidbody.velocity = Vector2.up * flapStrength;
         }
 
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision) {
+        manager.gameOver();
     }
 }
