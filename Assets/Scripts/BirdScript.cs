@@ -2,35 +2,69 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BirdScript : MonoBehaviour
+namespace FlappyBird
 {
 
-    // Reference the ridged body
-    public Rigidbody2D myRigidbody;
-
-    public float flapStrength;
-
-    public GameManager manager;
-
-    // Start is called before the first frame update
-    void Start()
+    public class BirdScript : MonoBehaviour
     {
-        manager = GameObject.FindGameObjectWithTag("Logic").GetComponent<GameManager>();
-        gameObject.name = "Mr. Birdie";
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        // Jump on the space bar
-        if (Input.GetKeyDown(KeyCode.Space))
+        // Reference the ridged body
+        public Rigidbody2D myRigidbody;
+
+        public float flapStrength;
+
+        public GameManager manager;
+
+        public bool birdIsAlive = true;
+
+        public Difficulty difficulty;
+
+        // Start is called before the first frame update
+        void Start()
         {
-            myRigidbody.velocity = Vector2.up * flapStrength;
+            manager = GameObject.FindGameObjectWithTag("Logic").GetComponent<GameManager>();
+            gameObject.name = "Mr. Birdie";
+            difficulty = manager.getDifficulty();
         }
 
-    }
+        // Update is called once per frame
+        void Update()
+        {
+            bool tryJump = (Input.GetKeyDown(KeyCode.Space) || touchScreenJump()) && (birdIsAlive || difficulty == Difficulty.Easy);
 
-    private void OnCollisionEnter2D(Collision2D collision) {
-        manager.gameOver();
+            // Jump on the space bar
+            // Allow the bird to jump on easy mode
+            if (tryJump)
+            {
+                myRigidbody.velocity = Vector2.up * flapStrength;
+            }
+        }
+
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            manager.gameOver();
+            enableBird(false);
+        }
+
+        public void enableBird(bool isAlive)
+        {
+            this.birdIsAlive = isAlive;
+        }
+
+        private bool touchScreenJump()
+        {
+            if (Input.touchCount > 0)
+            {
+                Touch touch = Input.GetTouch(0);
+
+                if (touch.phase == TouchPhase.Began)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+
     }
 }
