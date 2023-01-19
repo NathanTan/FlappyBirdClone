@@ -10,12 +10,6 @@ namespace FlappyBird
         public float moveSpeed = 2;
         public float deadZone = -178;
 
-        // Start is called before the first frame update
-        void Start()
-        {
-            Debug.Log(gameObject.name);
-        }
-
         // Update is called once per frame
         void Update()
         {

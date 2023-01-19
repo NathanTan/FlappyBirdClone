@@ -24,7 +24,8 @@ namespace FlappyBird
         {
             manager = GameObject.FindGameObjectWithTag("Logic").GetComponent<GameManager>();
             gameObject.name = "Mr. Birdie";
-            difficulty = manager.getDifficulty();
+            difficulty = GlobalControl.Instance.difficulty;
+            Debug.Log("Difficulty: " + difficulty);
         }
 
         // Update is called once per frame
@@ -42,8 +43,12 @@ namespace FlappyBird
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            manager.gameOver();
-            enableBird(false);
+            if (this.difficulty != Difficulty.Easy) {
+                endGame();
+            } else if (this.difficulty == Difficulty.Easy && collision.gameObject.CompareTag("AllDeath")) {
+                // If easy mode, only end the game for the AllDeath zones, the floor and back wall
+                endGame();
+            }
         }
 
         public void enableBird(bool isAlive)
@@ -65,6 +70,10 @@ namespace FlappyBird
             return false;
         }
 
+        private void endGame() {
+            manager.gameOver();
+            enableBird(false);
+        }
 
     }
 }
